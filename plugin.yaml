@@ -1,0 +1,35 @@
+name: jev-tool-pruner
+version: 0.1.0
+description: jev-basiertes Tool-Pruning - nur die Tool-Schemas in den Request, die der Task braucht. Local jeva.cpp (qwen3-4b), ein /v1/systemone-Call pro Request, fail-open.
+manifest_version: 1
+license: MIT
+author: frank
+python_dependencies:
+  - "httpx>=0.28,<0.29"
+provides_middleware:
+  - llm_request
+config_schema:
+  enabled:
+    type: bool
+    default: false
+    description: When true, prunes tool schemas per task via local jev.
+  router:
+    type: string
+    default: "http://127.0.0.1:8100/v1/systemone"
+    description: Local jeva.cpp systemone endpoint (single-model :8100).
+  model:
+    type: string
+    default: "qwen3-4b"
+    description: Decision model on the router.
+  threshold:
+    type: float
+    default: 0.5
+    description: noul probability above which a tool is kept.
+  min_always:
+    type: list
+    default: []
+    description: Tool names always kept regardless of jev (safety-critical).
+  max_request_tokens:
+    type: int
+    default: 1000000
+    description: Only prune when request token budget benefit; reserved.
